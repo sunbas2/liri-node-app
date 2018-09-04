@@ -1,51 +1,56 @@
 require("dotenv").config();
 
 var fs = require("fs");
-var keys = require('./key.js');
+var keys1 = require('./keys.js');
 var Spotify = require("node-spotify-api");
 var request = require("request");
 
 var options = function(action, parameter) {
     switch(action) {
-        case "spotify-this-song"
-        spotify(parameter);
-
+        case "spotify-this-song":
+            thisSpotify(parameter);
+            break;
         case "do-what-it-says":
-        default1();
-        break;
-
+            default1();
+            break;
+        default:
+            console.log("LIRI is not sure")
     };
 };
 
-function spotify(parameter) {
-    var spotify = new Spotify({
-        id: ea32ef732d984eceb10a6ea17e0854c3,
-        secret: c7dd6b4f88c341478741b08758e6a3cd
-    });
+function thisSpotify(parameter) {
+    var spotify = new Spotify(keys1.spotify);
+    };
 
-
-    spotify.search({ type: 'track', query: parameter}, funtion(err, data) {
-        if(err) {
-            console.log(err);
-            return;
-          
-        }
+    if (!parameter) {
+        parameter = "The Sign";
     }
 
-
-    function default1() {
-        fs.readFile("random.txt", "utf8", function(err, data) {
-            if (err) {
-                return console.log(err);
-            }
-            console.log(data);
-   
+    spotify.search({ type: 'track', query: parameter }, function(err, data) {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            output = 
+                "Song Name: " + parameter +
+                "Album Name: " + data.tracks.items[0].album.name +
+                "Artist Name: " + data.tracks.items[0].album.artists[0].name +
+                "URL: " + data.tracks.items[0].album.external_urls.spotify;
+            console.log(output);
+          
+        };
     });
-}
 
-var begin = function(argv2, argv3) {
-    options(argv2, argv3);
-};
+    var default1 = function() {
+        fs.readFile("random.txt", "utf8", function(err, data) {
+            console.log(data);
+            writeToLog(data);
+        });
+    }            
 
-begin(process.argv[2], process.argv[3]);
-
+    
+    var begin = function(argv2, argv3) {
+        options(argv2, argv3);
+    };
+    
+    begin(process.argv[2], process.argv[3]);
