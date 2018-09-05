@@ -1,9 +1,13 @@
 require("dotenv").config();
 
 var fs = require("fs");
-var keys1 = require('./keys.js');
+var keys = require('./keys.js');
 var Spotify = require("node-spotify-api");
 var request = require("request");
+var spotify = new Spotify(keys.spotify);
+
+action = process.argv[2];
+parameter = process.argv[3];
 
 var options = function(action, parameter) {
     switch(action) {
@@ -19,14 +23,14 @@ var options = function(action, parameter) {
 };
 
 function thisSpotify(parameter) {
-    var spotify = new Spotify(keys1.spotify);
+    var spotify = new Spotify(keys.spotify);
     };
 
     if (!parameter) {
         parameter = "The Sign";
-    }
+    };
 
-    spotify.search({ type: 'track', query: parameter }, function(err, data) {
+    spotify.search({type:'track', query:parameter}, function(err, data) {
         if (err) {
             console.log(err);
             return;
@@ -54,3 +58,4 @@ function thisSpotify(parameter) {
     };
     
     begin(process.argv[2], process.argv[3]);
+    
